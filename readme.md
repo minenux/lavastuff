@@ -1,4 +1,4 @@
-# Lavastuff
+# minetest mod Lavastuff
 
 [![](https://github.com/minetest-mods/lavastuff/workflows/Check%20&%20Release/badge.svg)](https://github.com/minetest-mods/lavastuff/actions)
 [![ContentDB](https://content.minetest.net/packages/Lone_Wolf/lavastuff/shields/downloads/)](https://content.minetest.net/packages/Lone_Wolf/lavastuff/)
@@ -7,7 +7,27 @@ Adds lava armor (where possible), tools, and blocks
 
 Please tell me (and everyone else) what you think at https://content.minetest.net/packages/Lone_Wolf/lavastuff/review/
 
-## **API**
+## Information
+
+Adds lava armor (where possible), tools, and blocks
+
+![](screenshot.png)
+
+## Technical info
+
+### Depends
+
+* default
+* bucket
+* fire
+* stairs
+* mobs_monster
+* 3d_armor
+* toolranks
+* moreblocks
+* vessels
+
+### **API**
 
 * **lavastuff.burn_drops("tool:itemstring")** - Cooks all of the nodes that **tool:itemstring** digs
 * **lavastuff.enable_tool_fire** - Enable/Disable the lava tool fire feature
@@ -15,19 +35,20 @@ Please tell me (and everyone else) what you think at https://content.minetest.ne
 * **lavastuff.cook_limit** - Prevent lava tools from smelting dug nodes if cooktime is too high
 * **lavastuff.tool_fire_func** - The function used by lavastuff tools to place fire
 
-## **Game support**
+### **Game support**
+
 * **Minetest Game** - 100% support
 * **MineClone2** - (Partial support)
 * **NodeCore** - (Coming soon, /give works)
 
-## **Language support**
+### **Language support**
 
 * **Spanish** - (Thanks to **runs** & **xenonca**)
 * **French** - (Thanks to **Brian Gaucher** and **louisroyer**)
 * **German** - (Thanks to **xenonca**)
 * **Italian** - (Thanks to **xenonca**)
 
-## **Special Features**
+### **Special Features**
 
 * **Tool Fire** - Lights flammable nodes on fire when rightclicked. If node has set on_ignite then that function will be run instead of the fire being placed
 * **Autosmelt** - All nodes dug with a lava tool will be automatically smelted before being added to your inventory
