@@ -1,19 +1,41 @@
 lavastuff = {}
 
-local MODPATH = minetest.get_modpath("lavastuff")
+local MODNAME = minetest.get_current_modname()
+local MODPATH = minetest.get_modpath(MODNAME)
 
 local COOLDOWN = dofile(MODPATH.."/cooldowns.lua")
 local S
 
 if minetest.get_translator ~= nil then
-	S = minetest.get_translator(minetest.get_current_modname())
+	S = minetest.get_translator(MODNAME)
 else
-	S = function(str, ...)
-		local args={...}
-			return str:gsub(
-				"@%d+", 
-				function(match) return args[tonumber(match:sub(2))] end
-			)
+	if minetest.get_modpath("intllib") then
+		dofile(minetest.get_modpath("intllib").."/init.lua")
+		if intllib.make_gettext_pair then
+			-- New method using gettext.
+			gettext, ngettext = intllib.make_gettext_pair()
+		else
+			-- Old method using text files.
+			gettext = intllib.Getter()
+		end
+		S = gettext
+	else
+		-- mock the translator function for MT 0.4
+		function minetest.translate(textdomain, str, ...)
+			local arg = {n=select('#', ...), ...}
+			return str:gsub("@(.)", function(matched)
+				local c = string.byte(matched)
+				if string.byte("1") <= c and c <= string.byte("9") then
+					return arg[c - string.byte("0")]
+				else
+					return matched
+				end
+			end)
+		end
+		function minetest.get_translator(textdomain)
+			return function(str, ...) return  minetest.translate(textdomain or "", str, ...) end
+		end
+		S = minetest.get_translator(MODNAME)
 	end
 end
 
@@ -117,28 +139,41 @@ function lavastuff.burn_drops(tool)
 		-- loop through current node drops
 		for _, drop in pairs(drops) do -- get cooked output of current drops
 			local stack = ItemStack(drop)
-			local output = minetest.get_craft_result({
-				method = "cooking",
-				width = 1,
-				items = {drop}
-			})
+			local safety = 0
 
-			for _, name in pairs(lavastuff.blacklisted_items) do
-				if name == drop then
-					return old_handle_node_drops(pos, drops, digger, ...)
+			repeat
+				local output, leftover = minetest.get_craft_result({
+					method = "cooking",
+					width = 1,
+					items = {stack:to_string()}
+				})
+
+				for _, name in pairs(lavastuff.blacklisted_items) do
+					if name == drop then
+						return old_handle_node_drops(pos, drops, digger, ...)
+					end
 				end
-			end
 
-			-- if we have cooked result then add to new list
-			if output and output.item and not output.item:is_empty() and output.time <= lavastuff.cook_limit then
-				table.insert(hot_drops,
-					ItemStack({
-						name = output.item:get_name(),
-						count = output.item:to_table().count,
-					})
-				)
-			else -- if not then return normal drops
-				table.insert(hot_drops, stack)
+				-- if we have cooked result then add to new list
+				if output and output.item and not output.item:is_empty() and output.time <= lavastuff.cook_limit then
+					table.insert(hot_drops,
+						ItemStack({
+							name = output.item:get_name(),
+							count = output.item:to_table().count,
+						})
+					)
+
+					stack = leftover.items[1]
+				else -- if not then return normal drops
+					table.insert(hot_drops, stack)
+					stack = nil
+				end
+
+				safety = safety + 1
+			until (safety > 999 or not stack or stack:get_count() <= 0)
+
+			if safety > 999 then
+				minetest.log("error", "[lavastuff]: Something went wrong with drop cooking")
 			end
 		end
 
