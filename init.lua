@@ -1,12 +1,13 @@
 lavastuff = {}
 
-local MODPATH = minetest.get_modpath(minetest.get_current_modname())
+local MODNAME = minetest.get_current_modname()
+local MODPATH = minetest.get_modpath(MODNAME)
 
 local COOLDOWN = dofile(MODPATH.."/cooldowns.lua")
 local S
 
 if minetest.get_translator ~= nil then
-	S = minetest.get_translator(minetest.get_current_modname())
+	S = minetest.get_translator(MODNAME)
 else
 	if minetest.get_modpath("intllib") then
 		dofile(minetest.get_modpath("intllib").."/init.lua")
@@ -34,7 +35,7 @@ else
 		function minetest.get_translator(textdomain)
 			return function(str, ...) return  minetest.translate(textdomain or "", str, ...) end
 		end
-		S = minetest.get_translator(minetest.get_current_modname())
+		S = minetest.get_translator(MODNAME)
 	end
 end
 
