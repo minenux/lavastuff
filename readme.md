@@ -3,13 +3,12 @@
 [![](https://github.com/minetest-mods/lavastuff/workflows/Check%20&%20Release/badge.svg)](https://github.com/minetest-mods/lavastuff/actions)
 [![ContentDB](https://content.minetest.net/packages/Lone_Wolf/lavastuff/shields/downloads/)](https://content.minetest.net/packages/Lone_Wolf/lavastuff/)
 
-Adds lava armor (where possible), tools, and blocks
-
-Please tell me (and everyone else) what you think at https://content.minetest.net/packages/Lone_Wolf/lavastuff/review/
+TOOLS of lava and blocks, featured armor too
 
 ## Information
 
-Adds lava armor (where possible), tools, and blocks
+TOOLS of lava and blocks, featured armor too, that sometimes 
+can burn or cook automatically the blocks or items. Adds lava armor (where possible).
 
 ![](screenshot.png)
 
